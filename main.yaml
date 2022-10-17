@@ -1,0 +1,8 @@
+
+- name: install docker
+  hosts: all
+  become: yes
+  remote_user: aen
+  roles:
+   - docker
+   - swarm

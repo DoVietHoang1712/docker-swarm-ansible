@@ -1,0 +1,56 @@
+---
+# tasks file for roles/docker
+
+- name: Install aptitude
+  apt:
+    name: aptitude
+    state: latest
+    update_cache: true
+
+- name: Install & Update important package
+  apt: 
+    name: "{{ packages }}"
+    state: present
+    update_cache: yes
+  vars:
+    packages:
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - software-properties-common
+    - gnupg-agent
+    - python3-docker
+
+- name: Add an apt signing key for Docker
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: set the stable repository
+  apt_repository: 
+    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+    state: present
+
+- name: Upgrade all apt packages
+  apt: upgrade=dist
+
+- name: Install Docker
+  package:
+    name: "{{ packages }}"
+    state: latest
+    update_cache: yes
+  vars:
+    packages:
+    - docker-ce
+    - docker-ce-cli 
+    - containerd.io
+    - docker-compose-plugin
+- name: Create docker group
+  group:
+    name: "{{ docker_group }}"
+    state: present
+- name: Add user to docker group
+  user:
+    name: "{{ remote_users }}"
+    group: "{{ docker_group }}"
+    append: yes 

@@ -1,0 +1,4 @@
+---
+# vars file for roles/docker
+docker_group: docker
+remote_users: aen
